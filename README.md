@@ -14,6 +14,7 @@ Dashboard web untuk memantau stok dan menjalankan proses reservasi hingga konfir
 - Mengonfirmasi pembelian sebelum reservasi kedaluwarsa.
 - Menampilkan pesan sukses dan error dari backend.
 - Mendukung tampilan desktop dan perangkat mobile.
+- Menyediakan halaman `/reset` untuk mengatur ulang stok item dan membatalkan reservasi aktifnya.
 
 ## Cara Menggunakan Dashboard
 
@@ -27,11 +28,19 @@ Dashboard web untuk memantau stok dan menjalankan proses reservasi hingga konfir
 
 Jika reservasi tidak dikonfirmasi dalam 5 menit, reservasi akan kedaluwarsa dan stok dikembalikan secara otomatis.
 
+### Mereset stok
+
+1. Buka https://indico.dwika.tech/reset.
+2. Masukkan item ID, jumlah stok baru, dan token reset.
+3. Klik **Reset stok**.
+
+Reset akan membatalkan semua reservasi aktif pada item tersebut. Token harus sama dengan `RESET_TOKEN` yang diatur pada backend. Gunakan halaman ini hanya saat memang ingin mengembalikan kondisi stok.
+
 ## Persyaratan
 
 - Node.js 24 atau lebih baru
 - npm
-- Indico Backend yang sudah berjalan
+- Indico Backend yang sudah berjalan (backend menyimpan stok dan reservasi di SQLite)
 - Docker (opsional)
 
 ## Menjalankan Secara Lokal
@@ -95,7 +104,11 @@ Jalankan perintah berikut dari direktori yang berisi folder `indico_be` dan `ind
 ```bash
 cd indico_be
 docker build -t indico_engine .
-docker run -d -p 8085:8085 --name indico_engine indico_engine
+docker volume create indico_data
+docker run -d -p 8085:8085 \
+  -e DATABASE_PATH=/app/data/indico.db \
+  -v indico_data:/app/data \
+  --name indico_engine indico_engine
 
 cd ../indico_fe
 docker build \
@@ -103,6 +116,8 @@ docker build \
   -t indico .
 docker run -d -p 3000:3000 --name indico indico
 ```
+
+Backend menyimpan stok dan reservasi di SQLite. Data tetap tersedia setelah backend atau container dimulai ulang selama direktori database dipasang sebagai volume Docker.
 
 ## Alur Data
 

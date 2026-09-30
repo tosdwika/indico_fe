@@ -61,6 +61,7 @@ body {
   font-weight: 700;
   letter-spacing: -0.8px;
   color: var(--primary);
+  text-decoration: none;
 }
 
 /* LIVE badge = success messaging pattern (success-pale / success-deep) */
@@ -88,6 +89,11 @@ body {
 .nav-sub {
   font-size: 14px;
   color: var(--mute);
+}
+
+.nav-sub a {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* ---------- shell ---------- */
@@ -391,6 +397,42 @@ button:disabled {
 .err {
   background: var(--surface-card);
   color: var(--error);
+}
+
+.nav-link {
+  color: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.reset-shell {
+  max-width: 720px;
+}
+
+.reset-hero {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reset-warning {
+  margin-top: 20px;
+  color: var(--error);
+  font-size: 14px;
+}
+
+.reset-message {
+  margin-top: 16px;
 }
 
 /* ---------- responsive ---------- */

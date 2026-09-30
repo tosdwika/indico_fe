@@ -115,7 +115,7 @@ export default function Home() {
           Indico
           <span className="nav-live"><span className="live-dot" />LIVE</span>
         </span>
-        <span className="nav-sub">Live stok &amp; reservasi flash-sale</span>
+        <span className="nav-sub">Live stok &amp; reservasi flash-sale · <a href="/reset">Reset stok</a></span>
       </nav>
 
       <main className="shell">
