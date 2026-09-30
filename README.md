@@ -2,7 +2,7 @@
 
 Mini dashboard untuk [indico_be](../indico_be): live inventory tracker, form reservasi, countdown 5 menit, dan konfirmasi pembelian.
 
-Live: **https://indico.dwika.tech** (frontend + `/api` proxy ke backend Go)
+Live: **https://indico.dwika.tech** (frontend) · **https://indico_engine.dwika.tech** (API backend)
 
 ## Run
 
@@ -133,17 +133,19 @@ Buka http://localhost:3000.
 
 ### Contoh via curl
 
+Gunakan `https://indico_engine.dwika.tech` (atau `http://localhost:8085` lokal):
+
 ```bash
 # cek stok
-curl "http://localhost:8085/api/v1/inventory/stock?item_id=item_4021"
+curl "https://indico_engine.dwika.tech/api/v1/inventory/stock?item_id=item_4021"
 
 # reservasi 2 unit
-curl -X POST http://localhost:8085/api/v1/inventory/reserve \
+curl -X POST https://indico_engine.dwika.tech/api/v1/inventory/reserve \
   -H 'Content-Type: application/json' \
   -d '{"user_id":"usr_1","item_id":"item_4021","quantity":2}'
 
 # konfirmasi (ganti res_… dengan reservation_id dari response di atas)
-curl -X POST http://localhost:8085/api/v1/inventory/confirm \
+curl -X POST https://indico_engine.dwika.tech/api/v1/inventory/confirm \
   -H 'Content-Type: application/json' \
   -d '{"reservation_id":"res_883291"}'
 ```
