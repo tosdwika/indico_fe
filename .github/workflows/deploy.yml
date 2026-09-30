@@ -1,0 +1,42 @@
+name: Build and Deploy Indico
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }} -t indico:latest .
+          docker save indico:latest | gzip > indico.tar.gz
+
+      - name: Copy image to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "indico.tar.gz"
+          target: "/tmp/"
+
+      - name: Deploy container on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker load -i /tmp/indico.tar.gz
+            rm -f /tmp/indico.tar.gz
+            docker stop indico 2>/dev/null || true
+            docker rm indico 2>/dev/null || true
+            docker run -d --name indico --restart unless-stopped -p 127.0.0.1:3008:3000 indico:latest
+            curl -sf http://127.0.0.1:3008/ > /dev/null

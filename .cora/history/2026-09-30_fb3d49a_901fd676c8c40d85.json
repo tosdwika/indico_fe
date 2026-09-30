@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-30T03:55:27.920270333Z",
+  "commit": "fb3d49a",
+  "branch": "main",
+  "files_reviewed": 0,
+  "lines_reviewed": null,
+  "findings": {},
+  "categories": {},
+  "quality_score": 10.0,
+  "gate_status": "disabled",
+  "duration_ms": null
+}
