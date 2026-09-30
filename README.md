@@ -1,48 +1,147 @@
-# indico_fe — Flash-Sale Dashboard (Next.js)
+# Indico Frontend
 
-Tampilan dari [indico_be](../indico_be): pantau stok langsung, pesan barang, dan selesaikan pesanan sebelum waktunya habis.
+Dashboard web untuk memantau stok dan menjalankan proses reservasi hingga konfirmasi pembelian. Aplikasi ini menggunakan Next.js dan terhubung ke [Indico Backend](../indico_be).
 
-Live: **https://indico.dwika.tech** (halaman ini) · **https://indico_engine.dwika.tech** (API-nya)
+- **Frontend production:** https://indico.dwika.tech
+- **API production:** https://indico_engine.dwika.tech
 
-## Apa yang Bisa Dilakukan
+## Fitur Utama
 
-Bayangkan seperti mengikuti flash-sale:
+- Menampilkan total stok, stok yang sedang direservasi, dan stok yang masih tersedia.
+- Memperbarui data stok otomatis setiap 3 detik.
+- Membuat reservasi berdasarkan user ID, item ID, dan jumlah barang.
+- Menampilkan detail reservasi aktif beserta hitung mundur 5 menit.
+- Mengonfirmasi pembelian sebelum reservasi kedaluwarsa.
+- Menampilkan pesan sukses dan error dari backend.
+- Mendukung tampilan desktop dan perangkat mobile.
 
-1. **Pantau stok** — di panel kiri terlihat berapa yang masih tersedia, sudah dipesan orang, dan totalnya. Angkanya berubah sendiri setiap 3 detik. Mau lihat barang lain? Ganti saja `item_id`-nya.
-2. **Pesan** — di panel kanan, isi user ID dan jumlah unit, lalu klik **Reserve stok**. Muncul kartu pesanan dengan hitungan waktu **5 menit**.
-3. **Selesaikan** — klik **Confirm Purchase** selama waktunya masih jalan. Selesai — pesanan tercatat.
-4. **Telat** — kalau 5 menit lewat tanpa konfirmasi, pesanan batal sendiri dan stoknya kembali. Coba lagi saja dari awal.
+## Cara Menggunakan Dashboard
 
-Kalau ada yang gagal — stok kurang, pesanan kedaluwarsa, dan sebagainya — alasannya tampil jelas di layar, langsung dari server.
+1. Buka https://indico.dwika.tech.
+2. Periksa stok pada panel **Stok tersedia**.
+3. Gunakan `item_4021` sebagai item awal, atau masukkan item ID lain yang tersedia di backend.
+4. Isi `user_id` dan `quantity` pada panel **Buat reservasi**.
+5. Klik **Reserve stok**.
+6. Setelah reservasi berhasil, periksa detail reservasi dan waktu yang tersisa.
+7. Klik **Confirm Purchase** sebelum hitung mundur mencapai nol.
 
-## Menjalankan
+Jika reservasi tidak dikonfirmasi dalam 5 menit, reservasi akan kedaluwarsa dan stok dikembalikan secara otomatis.
 
-Kalau backendnya sudah jalan, tampilannya bisa langsung dinyalakan:
+## Persyaratan
+
+- Node.js 24 atau lebih baru
+- npm
+- Indico Backend yang sudah berjalan
+- Docker (opsional)
+
+## Menjalankan Secara Lokal
+
+Install dependency:
 
 ```bash
 npm install
-NEXT_PUBLIC_API_URL=http://localhost:8085 npm run dev   # buka http://localhost:3000
 ```
 
-Atau keduanya sekaligus dengan Docker (dari folder yang berisi dua repo ini):
+Jalankan development server:
 
 ```bash
-cd indico_be && docker build -t indico_engine . && docker run -d -p 8085:8085 --name indico_engine indico_engine
-cd ../indico_fe && docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8085 -t indico . && docker run -d -p 3000:3000 --name indico indico
+NEXT_PUBLIC_API_URL=http://localhost:8085 npm run dev
 ```
 
-> Satu hal yang sering bikin bingung: `NEXT_PUBLIC_API_URL` harus alamat backend yang bisa dijangkau *browser* pengunjung — misalnya `https://indico.dwika.tech` saat produksi — bukan alamat di dalam jaringan Docker. Nilainya juga tertanam saat build, jadi begitu diganti, imagenya perlu dibuat ulang.
+Buka http://localhost:3000.
 
-## Sudah Dites
+`NEXT_PUBLIC_API_URL` adalah alamat dasar backend. Kode frontend akan menambahkan path `/api/v1/...`, sehingga nilainya tidak boleh diakhiri dengan `/api`.
 
-Tiga lapis, semua lolos:
+Contoh yang benar:
 
-**Tes unit & stress (backend)** — `go test -race -v ./...`: pesanan serentak ratusan kali tidak pernah melebihi stok, konfirmasi serentak hanya berhasil sekali.
+```text
+http://localhost:8085
+https://indico.dwika.tech
+```
 
-**API dari luar (produksi)** — 11 skenario dicoba langsung ke server: alur normal pesan-selesaikan, stok yang berkurang tepat jumlahnya, dan semua penolakan yang wajar (stok kurang, barang tak dikenal, pesanan telat, konfirmasi dua kali, input tidak lengkap).
+Contoh yang salah:
 
-**Tampilan (frontend)** — dicek di hasil build produksi: panel stok yang hidup, formulir pesanan, hitungan mundur yang dihitung dari waktu server (jadi tetap benar walau tab-nya sempat tidak aktif), serta pesan sukses/gagal yang juga ramah untuk pembaca layar.
+```text
+https://indico.dwika.tech/api
+```
 
-## Tampilan Visual
+## Production Build
 
-Mengikuti gaya desain Pinterest: merah khasnya hanya untuk tombol utama, sudut-sudut membulat, huruf Inter. Semua aturan warnanya ada di `src/app/globals.css`.
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8085 npm run build
+npm start
+```
+
+Nilai `NEXT_PUBLIC_API_URL` dimasukkan ke bundle saat proses build. Jika alamat backend berubah, aplikasi harus dibangun ulang.
+
+## Menjalankan dengan Docker
+
+Pastikan backend sudah berjalan di `http://localhost:8085`, kemudian jalankan:
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8085 \
+  -t indico .
+
+docker run --rm -p 3000:3000 --name indico indico
+```
+
+Buka http://localhost:3000.
+
+## Menjalankan Backend dan Frontend
+
+Jalankan perintah berikut dari direktori yang berisi folder `indico_be` dan `indico_fe`:
+
+```bash
+cd indico_be
+docker build -t indico_engine .
+docker run -d -p 8085:8085 --name indico_engine indico_engine
+
+cd ../indico_fe
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8085 \
+  -t indico .
+docker run -d -p 3000:3000 --name indico indico
+```
+
+## Alur Data
+
+1. Frontend mengambil data stok dari endpoint `GET /api/v1/inventory/stock`.
+2. Setelah reservasi dibuat, backend mengirimkan `reservation_id` dan `expires_at`.
+3. Frontend menghitung waktu yang tersisa berdasarkan `expires_at` dari server.
+4. Konfirmasi dikirim ke endpoint `POST /api/v1/inventory/confirm`.
+5. Setelah reservasi dikonfirmasi atau kedaluwarsa, frontend mengambil ulang data stok terbaru.
+
+## Penanganan Error
+
+Frontend menampilkan pesan dari backend agar pengguna mengetahui penyebab kegagalan, misalnya:
+
+- stok tidak mencukupi;
+- item tidak ditemukan;
+- reservasi sudah kedaluwarsa;
+- reservasi sudah dikonfirmasi; atau
+- input belum lengkap.
+
+Pesan sukses menggunakan `role="status"`, sedangkan pesan error menggunakan `role="alert"` agar dapat dikenali oleh pembaca layar.
+
+## Pengujian
+
+Backend diuji menggunakan:
+
+```bash
+go test -race -v ./...
+```
+
+Pengujian API mencakup alur normal dan kondisi gagal: input tidak valid, item tidak ditemukan, stok tidak cukup, reservasi tidak ditemukan, reservasi kedaluwarsa, dan konfirmasi ganda.
+
+Frontend production telah diperiksa untuk memastikan:
+
+- data stok dapat dimuat dan diperbarui;
+- form reservasi dapat digunakan;
+- hitung mundur mengikuti waktu kedaluwarsa dari backend;
+- konfirmasi pembelian berjalan; dan
+- pesan sukses maupun error tampil dengan benar.
+
+## Desain
+
+Antarmuka menggunakan palet warna, tipografi, radius, dan hierarki visual yang mengacu pada design system Pinterest. Seluruh token tampilan berada di `src/app/globals.css`.
