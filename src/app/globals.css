@@ -1,0 +1,409 @@
+/* Indico — Pinterest design system (DESIGN-pinterest.md), Inter as Pin Sans substitute */
+:root {
+  --primary: #e60023;
+  --primary-pressed: #cc001f;
+  --ink: #000000;
+  --body: #33332e;
+  --mute: #62625b;
+  --ash: #91918c;
+  --secondary-bg: #e5e5e0;
+  --secondary-pressed: #c8c8c1;
+  --canvas: #ffffff;
+  --surface-soft: #fbfbf9;
+  --surface-card: #f6f6f3;
+  --surface-dark: #262622;
+  --on-dark: #ffffff;
+  --on-dark-mute: rgba(255, 255, 255, 0.7);
+  --hairline: #dadad3;
+  --error: #9e0a0a;
+  --success-deep: #103c25;
+  --success-pale: #c7f0da;
+  --focus-outer: #435ee5;
+  --r-md: 16px;
+  --r-lg: 32px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--body);
+  background: var(--surface-soft);
+  font-family: Inter, -apple-system, system-ui, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- primary-nav: 64px, flat canvas, hairline rule ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: var(--primary);
+}
+
+/* LIVE badge = success messaging pattern (success-pale / success-deep) */
+.nav-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--success-deep);
+  background: var(--success-pale);
+  padding: 6px 12px;
+  border-radius: 9999px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success-deep);
+}
+
+.nav-sub {
+  font-size: 14px;
+  color: var(--mute);
+}
+
+/* ---------- shell ---------- */
+.shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px clamp(16px, 4vw, 48px) 96px;
+}
+
+.hero {
+  margin-bottom: 64px; /* spacing.section */
+}
+
+/* display-xl: 70px / 600 / -1.2px, scales to 44px at mobile */
+.hero h1 {
+  font-size: clamp(44px, 6vw, 70px);
+  font-weight: 600;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.hero p {
+  margin-top: 12px;
+  font-size: 16px;
+  color: var(--mute);
+  max-width: 46ch;
+}
+
+/* ---------- 2-col feature row ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* feature-card: canvas, rounded.md, 32px padding */
+.panel {
+  background: var(--canvas);
+  border-radius: var(--r-md);
+  padding: 32px;
+}
+
+/* hero-cta-strip tier: surface-dark feature panel */
+.panel-dark {
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  border-radius: var(--r-md);
+  padding: 32px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* body-sm-strong — hierarchy from weight, no uppercase */
+.panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--mute);
+}
+
+.panel-dark .panel-title {
+  color: var(--on-dark-mute);
+}
+
+.panel-item {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* display-xl tier number (only rendered inside dark panel) */
+.big {
+  font-size: clamp(44px, 6vw, 70px);
+  font-weight: 600;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  color: var(--on-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.big small {
+  font-size: 0.25em;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--on-dark-mute);
+  margin-left: 8px;
+}
+
+/* stock bar — monochrome; red is reserved for CTAs (dark panel only) */
+.bar {
+  height: 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+  margin: 24px 0 12px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--on-dark);
+  transition: width 0.4s ease;
+}
+
+.bar-fill.low {
+  background: var(--primary);
+}
+
+.legend {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--on-dark-mute);
+}
+
+.legend b {
+  color: var(--on-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.legend .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  background: var(--on-dark);
+  vertical-align: middle;
+}
+
+.legend .dot.res {
+  background: var(--primary);
+}
+
+.legend .dot.tot {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------- forms: text-input spec (canvas, 1px ash, 44px, rounded.md) ---------- */
+label {
+  display: block;
+  margin-top: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+label:first-of-type {
+  margin-top: 0;
+}
+
+.panel-dark label {
+  color: var(--on-dark-mute);
+}
+
+input {
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  padding: 11px 15px;
+  border: 1px solid var(--ash);
+  border-radius: var(--r-md);
+  background: var(--canvas);
+  color: var(--ink);
+  font: inherit;
+}
+
+input::placeholder {
+  color: var(--ash);
+}
+
+/* signature double-ring focus: ink inner + focus blue outer */
+input:focus-visible {
+  outline: 4px solid var(--focus-outer);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.panel-dark input {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--on-dark);
+}
+
+.panel-dark input:focus-visible {
+  outline-color: var(--primary);
+  box-shadow: inset 0 0 0 2px var(--on-dark);
+}
+
+/* ---------- button-md: 40px, 6px 14px, 14px/700, rounded.md ---------- */
+button {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--r-md);
+  background: var(--primary);
+  color: var(--canvas);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-pressed);
+}
+
+button:focus-visible {
+  outline: 4px solid var(--focus-outer);
+}
+
+button.secondary {
+  width: auto;
+  height: 40px;
+  padding: 6px 14px;
+  background: var(--secondary-bg);
+  color: var(--ink);
+}
+
+button.secondary:hover {
+  background: var(--secondary-pressed);
+}
+
+button:disabled {
+  background: var(--surface-card);
+  color: var(--ash);
+  cursor: not-allowed;
+}
+
+.panel-dark button.secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--on-dark);
+}
+
+.panel-dark button.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ---------- reservation card = modal-card tier (rounded.lg, 32px pad) ---------- */
+.res-card {
+  margin-top: 24px;
+  background: var(--surface-dark);
+  color: var(--on-dark);
+  border-radius: var(--r-lg);
+  padding: 32px;
+}
+
+.res-card .panel-title {
+  color: var(--on-dark-mute);
+}
+
+/* display-lg: 44px / 700 / -0.8px */
+.timer {
+  font-size: clamp(36px, 5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+/* urgency = brand red (large text, passes contrast on dark) */
+.timer.warn {
+  color: var(--primary);
+}
+
+.res-meta {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--on-dark-mute);
+}
+
+.res-meta b {
+  color: var(--on-dark);
+}
+
+/* ---------- messages: success / error pills ---------- */
+.ok,
+.err {
+  margin-top: 24px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ok {
+  background: var(--success-pale);
+  color: var(--success-deep);
+}
+
+.err {
+  background: var(--surface-card);
+  color: var(--error);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shell {
+    padding-top: 32px;
+  }
+
+  .hero {
+    margin-bottom: 48px;
+  }
+}
