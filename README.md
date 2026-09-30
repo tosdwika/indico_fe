@@ -1,55 +1,48 @@
 # indico_fe — Flash-Sale Dashboard (Next.js)
 
-Dashboard untuk [indico_be](../indico_be): lihat stok secara live, pesan (reservasi), dan konfirmasi sebelum waktu habis.
+Tampilan dari [indico_be](../indico_be): pantau stok langsung, pesan barang, dan selesaikan pesanan sebelum waktunya habis.
 
-Live: **https://indico.dwika.tech** (frontend) · **https://indico_engine.dwika.tech** (API)
+Live: **https://indico.dwika.tech** (halaman ini) · **https://indico_engine.dwika.tech** (API-nya)
 
-## Cara Pakai
+## Apa yang Bisa Dilakukan
 
-1. **Lihat stok** — panel kiri menampilkan stok tersedia/terreservasi/total, refresh otomatis tiap 3 detik. Ganti `item_id` untuk melihat item lain.
-2. **Pesan** — panel kanan: isi `user_id` dan `quantity`, klik **Reserve stok**. Muncul kartu reservasi dengan hitungan mundur **5 menit**.
-3. **Konfirmasi** — klik **Confirm Purchase** sebelum waktu habis. Sukses → pesan hijau dengan ID pesanan.
-4. **Habis waktu** — tidak konfirmasi dalam 5 menit → reservasi batal, stok kembali otomatis.
+Bayangkan seperti mengikuti flash-sale:
 
-Semua kegagalan dari backend (stok kurang, kedaluwarsa, dsb.) tampil sebagai pesan error yang jelas — teksnya persis dari API.
+1. **Pantau stok** — di panel kiri terlihat berapa yang masih tersedia, sudah dipesan orang, dan totalnya. Angkanya berubah sendiri setiap 3 detik. Mau lihat barang lain? Ganti saja `item_id`-nya.
+2. **Pesan** — di panel kanan, isi user ID dan jumlah unit, lalu klik **Reserve stok**. Muncul kartu pesanan dengan hitungan waktu **5 menit**.
+3. **Selesaikan** — klik **Confirm Purchase** selama waktunya masih jalan. Selesai — pesanan tercatat.
+4. **Telat** — kalau 5 menit lewat tanpa konfirmasi, pesanan batal sendiri dan stoknya kembali. Coba lagi saja dari awal.
+
+Kalau ada yang gagal — stok kurang, pesanan kedaluwarsa, dan sebagainya — alasannya tampil jelas di layar, langsung dari server.
 
 ## Menjalankan
 
-Frontend saja (butuh backend jalan dulu):
+Kalau backendnya sudah jalan, tampilannya bisa langsung dinyalakan:
 
 ```bash
 npm install
 NEXT_PUBLIC_API_URL=http://localhost:8085 npm run dev   # buka http://localhost:3000
 ```
 
-Backend + frontend sekaligus (Docker):
+Atau keduanya sekaligus dengan Docker (dari folder yang berisi dua repo ini):
 
 ```bash
-# dari folder yang berisi indico_be dan indico_fe
 cd indico_be && docker build -t indico_engine . && docker run -d -p 8085:8085 --name indico_engine indico_engine
 cd ../indico_fe && docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8085 -t indico . && docker run -d -p 3000:3000 --name indico indico
 ```
 
-> **Penting:** `NEXT_PUBLIC_API_URL` harus alamat backend yang bisa diakses **browser** (mis. `https://indico.dwika.tech` di produksi), bukan alamat internal Docker. Nilai ini dimasukkan ke bundle saat build — mengubahnya berarti build ulang.
+> Satu hal yang sering bikin bingung: `NEXT_PUBLIC_API_URL` harus alamat backend yang bisa dijangkau *browser* pengunjung — misalnya `https://indico.dwika.tech` saat produksi — bukan alamat di dalam jaringan Docker. Nilainya juga tertanam saat build, jadi begitu diganti, imagenya perlu dibuat ulang.
 
-## Pengujian
+## Sudah Dites
 
-**Backend** — `go test -race -v ./...`: 6/6 PASS, termasuk stress test (reserve bersamaan tidak oversell; confirm paralel hanya sukses sekali).
+Tiga lapis, semua lolos:
 
-**API end-to-end** (live di server produksi): 11/11 skenario lulus — happy path + semua negative case:
+**Tes unit & stress (backend)** — `go test -race -v ./...`: pesanan serentak ratusan kali tidak pernah melebihi stok, konfirmasi serentak hanya berhasil sekali.
 
-| Skenario | Hasil |
-|---|---|
-| Cek stok / reserve / confirm normal | 200/201/200 ✅ |
-| Stok berkurang tepat sesuai quantity reserve & confirm | ✅ |
-| `quantity=0`, tanpa `item_id` | 400 `INVALID_INPUT` ✅ |
-| Item tidak dikenal | 404 `ITEM_NOT_FOUND` ✅ |
-| Quantity melebihi stok | 409 `INSUFFICIENT_STOCK` ✅ |
-| Confirm ID tidak dikenal | 404 ✅ |
-| Confirm dua kali | 409 `ALREADY_CONFIRMED` ✅ |
+**API dari luar (produksi)** — 11 skenario dicoba langsung ke server: alur normal pesan-selesaikan, stok yang berkurang tepat jumlahnya, dan semua penolakan yang wajar (stok kurang, barang tak dikenal, pesanan telat, konfirmasi dua kali, input tidak lengkap).
 
-**Frontend** — diverifikasi di bundle production: panel stok live, form reservasi, countdown 5 menit dari `expires_at` server (bukan counter lokal — tetap akurat walau tab di-pause), tombol confirm, dan semua state error ter-render dengan aksesibilitas (`role="alert"`/`role="status"`).
+**Tampilan (frontend)** — dicek di hasil build produksi: panel stok yang hidup, formulir pesanan, hitungan mundur yang dihitung dari waktu server (jadi tetap benar walau tab-nya sempat tidak aktif), serta pesan sukses/gagal yang juga ramah untuk pembaca layar.
 
-## Desain
+## Tampilan Visual
 
-Mengikuti design system Pinterest: merah `#e60023` khusus tombol utama, sudut membulat 16/32px, Inter sebagai pengganti Pin Sans. Detail token di `src/app/globals.css`.
+Mengikuti gaya desain Pinterest: merah khasnya hanya untuk tombol utama, sudut-sudut membulat, huruf Inter. Semua aturan warnanya ada di `src/app/globals.css`.
