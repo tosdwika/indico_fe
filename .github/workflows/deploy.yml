@@ -13,7 +13,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }} -t indico:latest .
+          docker build --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://indico.dwika.tech/api' }} -t indico:latest .
           docker save indico:latest | gzip > indico.tar.gz
 
       - name: Copy image to VPS
