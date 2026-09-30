@@ -7,7 +7,6 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8085";
 export default function ResetPage() {
   const [item, setItem] = useState("item_4021");
   const [total, setTotal] = useState(100);
-  const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -21,10 +20,7 @@ export default function ResetPage() {
     try {
       const response = await fetch(`${API}/api/v1/inventory/reset`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ item_id: item, total_stock: Number(total) }),
       });
       const data = await response.json().catch(() => ({}));
@@ -63,16 +59,6 @@ export default function ResetPage() {
               min={1}
               value={total}
               onChange={(e) => setTotal(Number(e.target.value))}
-              required
-            />
-          </label>
-          <label>
-            Token reset
-            <input
-              type="password"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              autoComplete="current-password"
               required
             />
           </label>

@@ -31,10 +31,10 @@ Jika reservasi tidak dikonfirmasi dalam 5 menit, reservasi akan kedaluwarsa dan 
 ### Mereset stok
 
 1. Buka https://indico.dwika.tech/reset.
-2. Masukkan item ID, jumlah stok baru, dan token reset.
+2. Masukkan item ID dan jumlah stok baru.
 3. Klik **Reset stok**.
 
-Reset akan membatalkan semua reservasi aktif pada item tersebut. Token harus sama dengan `RESET_TOKEN` yang diatur pada backend. Gunakan halaman ini hanya saat memang ingin mengembalikan kondisi stok.
+Reset akan membatalkan semua reservasi aktif pada item tersebut. Gunakan halaman ini hanya saat memang ingin mengembalikan kondisi stok.
 
 ## Persyaratan
 
