@@ -39,4 +39,4 @@ jobs:
             docker stop indico 2>/dev/null || true
             docker rm indico 2>/dev/null || true
             docker run -d --name indico --restart unless-stopped -p 127.0.0.1:3008:3000 indico:latest
-            curl -sf http://127.0.0.1:3008/ > /dev/null
+            for i in 1 2 3 4 5; do curl -sf http://127.0.0.1:3008/ > /dev/null && exit 0; sleep 3; done; exit 1
